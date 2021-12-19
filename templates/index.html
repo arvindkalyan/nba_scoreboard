@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} NBA Scoreboard {% endblock %}</h1>
+    {% for item in scores %}
+        <div>
+            <h2>{{ item["vTeam"]["triCode"]  }} {{ item["vTeam"]["score"]  }}</h2>
+            <h2>{{ item["hTeam"]["triCode"] }} {{ item["hTeam"]["score"] }}</h2>
+        </div>
+        <hr>
+    {% endfor %}
+{% endblock %}
