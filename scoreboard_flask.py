@@ -8,13 +8,19 @@ def refresh_data(link):
     with urllib.request.urlopen(link) as url:
         return json.loads(url.read().decode())
 
-@app.route('/<string:datestring>/<string:gamestring>/<string:tricodes>') 
-def game(datestring, gamestring, tricodes): 
+@app.route('/<string:datestring>/<string:gamestring>') 
+def game(datestring, gamestring): 
+    
     pbp = "https://data.nba.net/data/10s/json/cms/noseason/game/{}/{}/pbp_all.json".format(datestring, gamestring)
     with urllib.request.urlopen(pbp) as url:
         plays = json.loads(url.read().decode())
+    if "play" in plays["sports_content"]["game"]:
+        return render_template('game.html', plays = plays["sports_content"]["game"]["play"], datestring = datestring, 
+        visitor = plays["sports_content"]["game"]["game_url"][-6:-3], home = plays["sports_content"]["game"]["game_url"][-3:])
+    else:
+        return render_template('game.html', plays = {}, datestring = datestring, 
+        visitor = plays["sports_content"]["game"]["game_url"][-6:-3], home = plays["sports_content"]["game"]["game_url"][-3:])
 
-    return render_template('game.html', plays = plays["sports_content"]["game"]["play"], datestring = datestring, visitor = tricodes[:3], home = tricodes[3:])
 
 @app.route('/<string:datestring>') 
 def scoreboard(datestring): 

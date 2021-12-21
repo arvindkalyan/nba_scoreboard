@@ -4,6 +4,7 @@
     
     <script src="{{ url_for('static', filename='get_scoreboard.js') }}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
     <script>
         setInterval(function () {
             var datestring = $('#datestring').data().string;
@@ -37,12 +38,15 @@
     {% extends 'base.html' %}
 
     {% block content %}
+    
     <div class="games">
     {% for item in scores %}
 
     <div> 
         <h2 class="game"> {{ item["vTeam"]["triCode"]  }} {{ item["vTeam"]["score"]  }} </h2> 
         <h2 class="game"> {{ item["hTeam"]["triCode"] }} {{ item["hTeam"]["score"] }} </h2> 
+        <a href="{{ '/%s/%s'%(datestring, item.gameId) }}">Play-by-Play </a>
+
     </div> 
     <hr>
         
