@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} {{visitor}} @ {{home}} Play-by-Play {% endblock %}</h1>
+    <table>
+    <tr>
+        <th>Quarter</th>
+        <th>Time</th>
+        <th style="text-align:left">Play</th>
+        <th >{{visitor}}</th>
+        <th>{{home}}</th>
+      </tr>
+    {% for item in plays|reverse %}
+            <tr>
+                <td style="text-align:center">{{ item["period"]  }}</td>
+                <td>{{ item["clock"].lstrip('0')  }}</td>
+                <td>{{ item["description"]  }}</td>
+                <td style="text-align:center">{{ item["visitor_score"]  }}</td>
+                <td style="text-align:center">{{ item["home_score"]  }}</td>
+            </tr>
+    {% endfor %}
+</table>
+{% endblock %}
