@@ -1,23 +1,74 @@
-{% extends 'base.html' %}
+<h1>{% block title %} {{visitor}} @ {{home}} Play-by-Play {{datestring[-4:-2]}}-{{datestring[-2:]}}-{{datestring[:4]}}
+    {% endblock %}</h1>
+{% block head %}
 
-{% block content %}
-    <h1>{% block title %} {{visitor}} @ {{home}} Play-by-Play {% endblock %}</h1>
-    <table>
-    <tr>
-        <th>Quarter</th>
-        <th>Time</th>
-        <th style="text-align:left">Play</th>
-        <th >{{visitor}}</th>
-        <th>{{home}}</th>
-      </tr>
-    {% for item in plays|reverse %}
-            <tr>
-                <td style="text-align:center">{{ item["period"]  }}</td>
-                <td>{{ item["clock"].lstrip('0')  }}</td>
-                <td>{{ item["description"]  }}</td>
-                <td style="text-align:center">{{ item["visitor_score"]  }}</td>
-                <td style="text-align:center">{{ item["home_score"]  }}</td>
-            </tr>
-    {% endfor %}
-</table>
+<script src="{{ url_for('static', filename='get_scoreboard.js') }}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    setInterval(function () {
+        var datestring = $('#gameinfo').data().datestring;
+        var gamestring = $('#gameinfo').data().gamestring;
+        console.log(datestring)
+        console.log(gamestring)
+        // AJAX send request
+        $.ajax({
+            url: "https://data.nba.net/data/10s/json/cms/noseason/game/" + datestring + "/" + gamestring + "/pbp_all.json",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                console.log(document.getElementById("playbyplay").tBodies[0].rows.length-1)
+                console.log(data.sports_content.game.play.length)
+                //var row = document.getElementById("playbyplay").insertRow(1)
+                //row.innerHTML = "<td style='text-align:center'> TEST </td> <td> TEST </td> <td> TEST </td> <td style='text-align:center'> TEST </td> <td style='text-align:center'>TEST</td>"
+                
+                if (data.sports_content.game.play.length > document.getElementById("playbyplay").tBodies[0].rows.length-1) {
+                    //location.reload();
+                    console.log("REFRESH REQUIRED")
+                    var game = "";
+                    for(let i = document.getElementById("playbyplay").tBodies[0].rows.length-1; i < data.sports_content.game.play.length; i++){
+                        console.log(data.sports_content.game.play[i])
+                        break
+                    }
+                    $.each(data.sports_content.game.play, function (key, value) {
+                        //console.log(value); //this outputs response as Objects shown above
+                        //$(".playbyplay").prepend(
+                         //   "<tr> <td style='text-align:center'>" + value.period + "</td> <td>" + value.clock + "</td> <td>" + value.description + "</td> <td style='text-align:center'>" + value.visitor_score + "</td> <td style='text-align:center'>"+ value.home_score + "</td> </tr>"
+                        //);
+                    });
+                    //console.log(game)
+
+                }
+            },
+            error: function (request, error) { }
+        });
+    }, 3000);  // check about changes every 30 seconds
+</script>
 {% endblock %}
+
+<body>
+    <meta id="gameinfo" data-datestring="{{datestring}}" data-gamestring="{{gamestring}}">
+    {% extends 'base.html' %}
+
+    {% block content %}
+    <table id="playbyplay">
+        <tr>
+            <th>Quarter</th>
+            <th>Time</th>
+            <th style="text-align:left">Play</th>
+            <th>{{visitor}}</th>
+            <th>{{home}}</th>
+            
+        </tr>
+        {% for item in plays[:3]|reverse %}
+        <tr>
+            <td style='text-align:center'>{{ item["period"] }}</td>
+            <td>{{ item["clock"].lstrip('0') }}</td>
+            <td>{{ item["description"] }}</td>
+            <td style='text-align:center'>{{ item["visitor_score"] }}</td>
+            <td style='text-align:center'>{{ item["home_score"] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endblock %}
+</body>

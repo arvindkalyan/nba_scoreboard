@@ -15,10 +15,10 @@ def game(datestring, gamestring):
     with urllib.request.urlopen(pbp) as url:
         plays = json.loads(url.read().decode())
     if "play" in plays["sports_content"]["game"]:
-        return render_template('game.html', plays = plays["sports_content"]["game"]["play"], datestring = datestring, 
+        return render_template('game.html', plays = plays["sports_content"]["game"]["play"], datestring = datestring, gamestring = gamestring,
         visitor = plays["sports_content"]["game"]["game_url"][-6:-3], home = plays["sports_content"]["game"]["game_url"][-3:])
     else:
-        return render_template('game.html', plays = {}, datestring = datestring, 
+        return render_template('game.html', plays = {}, datestring = datestring, gamestring = gamestring,
         visitor = plays["sports_content"]["game"]["game_url"][-6:-3], home = plays["sports_content"]["game"]["game_url"][-3:])
 
 
@@ -27,6 +27,7 @@ def scoreboard(datestring):
     scoreboard = "https://data.nba.net/prod/v1/{}/scoreboard.json".format(datestring)
     with urllib.request.urlopen(scoreboard) as url:
         scores = json.loads(url.read().decode())
+    
     return render_template('get_json.html', scores = scores["games"], datestring = datestring)
 
 @app.route('/')

@@ -1,40 +1,57 @@
-<h1>{% block title %} NBA Scoreboard {% endblock %}</h1>
+<h1>{% block title %}  NBA Scoreboard {{datestring[-4:-2]}}-{{datestring[-2:]}}-{{datestring[:4]}} {% endblock %}</h1>
 
 {% block head %}
     
     <script src="{{ url_for('static', filename='get_scoreboard.js') }}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+
     
     <script>
         setInterval(function () {
-            var datestring = $('#datestring').data().string;
+            var datestring = $('#gameinfo').data().datestring;
             // AJAX send request
             $.ajax({
                 url: "https://data.nba.net/prod/v1/"+datestring+"/scoreboard.json",
                 type: "GET",
                 dataType: "json",
                 success: function (data) {
+                    //console.log(olddata)
+                    //console.log(JSON.stringify(olddata))
+                    //console.log(data.games)
                     
-                    if (data.success) {
+                    
+                        
                         //location.reload();
                         var game = "";
                     $.each(data.games, function (key, value) {
-                        console.log(value); //this outputs response as Objects shown above
-                        game += '<div> <h2 class="game">' + value.vTeam.triCode + " " + value.vTeam.score + '</h2> <h2 class="game">' + value.hTeam.triCode + " " + value.hTeam.score + '</h2> </div>  <hr>';
-                    });
-                    console.log(game)
-                    $(".games").html(game);
+                        //console.log(document.getElementById(value.gameId+'clock').innerHTML)
+                        console.log(document.getElementsByClassName("clock")[key].innerHTML+document.getElementsByClassName("visitor")[key].innerHTML.substring(4)+document.getElementsByClassName("home")[key].innerHTML.substring(4))
+                        console.log(value.clock+value.vTeam.score+value.hTeam.score)
+                        if(value.clock+value.vTeam.score+value.hTeam.score !== document.getElementsByClassName("clock")[key].innerHTML+document.getElementsByClassName("visitor")[key].innerHTML.substring(4)+document.getElementsByClassName("home")[key].innerHTML.substring(4)){
+                            console.log("REQUIRES REFRESH")
+                            document.getElementsByClassName("clock")[key].innerHTML = value.clock
+                            
+                            document.getElementsByClassName("visitor")[key].innerHTML =  value.vTeam.triCode + " " + value.vTeam.score
+                            document.getElementsByClassName("home")[key].innerHTML =  value.hTeam.triCode + " " + value.hTeam.score
+                            //console.log(value); //this outputs response as Objects shown above
+                            
+                            //$("#"+value.gameId).html('<h2 class="game">' + value.vTeam.triCode + " " + value.vTeam.score + '</h2> <h2 class="game">' + value.hTeam.triCode + " " + value.hTeam.score + '</h2>');
+                        }
                         
-                    }
+                    });
+                    //console.log(game)
+                        
+                    
                 },
                 error: function (request, error) { }
             });
-        }, 3000);  // check about changes every 30 seconds
+        }, 1000);  // check about changes every 30 seconds
     </script>
 {% endblock %}
 
 <body>
-    <meta id="datestring" data-string="{{datestring}}">
+    <meta id="gameinfo" data-datestring="{{datestring}}">
     {% extends 'base.html' %}
 
     {% block content %}
@@ -42,12 +59,32 @@
     <div class="games">
     {% for item in scores %}
 
-    <div> 
-        <h2 class="game"> {{ item["vTeam"]["triCode"]  }} {{ item["vTeam"]["score"]  }} </h2> 
-        <h2 class="game"> {{ item["hTeam"]["triCode"] }} {{ item["hTeam"]["score"] }} </h2> 
-        <a href="{{ '/%s/%s'%(datestring, item.gameId) }}">Play-by-Play </a>
+    <div class="game"> 
+        <h2 class="visitor">{{ item["vTeam"]["triCode"]  }} {{ item["vTeam"]["score"]}}</h2> 
+        <h2 class="home">{{ item["hTeam"]["triCode"] }} {{ item["hTeam"]["score"]}}</h2> 
+        
+        {% if item["statusNum"] == 1 %}
+            <h2 class="info"> {{ item["startTimeEastern"] }} </h2> 
+            <h2 class="clock"></h2>
+            <h2 class="quarter"></h2>
+        {% endif %}
+        
+        {% if item["statusNum"] == 2 %}
+            <h2 class="quarter"> Quarter {{ item["period"]["current"] }} </h2> 
+            <h2 class="clock">{{ item["clock"] }}</h2> 
+        {% endif %}
+
+        {% if item["statusNum"] == 3 %}
+            <h2 class="info"> FINAL </h2> 
+            <h2 class="clock"></h2>
+            <h2 class="quarter"> </h2>
+        {% endif %}
+        
+        
+        
 
     </div> 
+    <a href="{{ '/%s/%s'%(datestring, item.gameId) }}">Play-by-Play </a>
     <hr>
         
     {% endfor %}
