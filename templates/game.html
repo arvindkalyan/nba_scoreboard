@@ -26,7 +26,7 @@
                         console.log(data.sports_content.game.play[i])
                         var row = document.getElementById("playbyplay").insertRow(1)
                         row.innerHTML = "<td style='text-align:center'> " + data.sports_content.game.play[i].period + " </td> <td> " + data.sports_content.game.play[i].clock + " </td> <td> " + data.sports_content.game.play[i].description + " </td> <td style='text-align:center'> " + data.sports_content.game.play[i].visitor_score + " </td> <td style='text-align:center'>" + data.sports_content.game.play[i].home_score + "</td>"
-                        break
+                        
                     }
                     $.each(data.sports_content.game.play, function (key, value) {
                         //console.log(value); //this outputs response as Objects shown above
@@ -58,7 +58,7 @@
             <th>{{home}}</th>
             
         </tr>
-        {% for item in plays[:3]|reverse %}
+        {% for item in plays|reverse %}
         <tr>
             <td style='text-align:center'>{{ item["period"] }}</td>
             <td>{{ item["clock"].lstrip('0') }}</td>
