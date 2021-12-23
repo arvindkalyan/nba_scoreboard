@@ -19,8 +19,7 @@
             success: function (data) {
                 console.log(document.getElementById("playbyplay").tBodies[0].rows.length-1)
                 console.log(data.sports_content.game.play.length)
-                //var row = document.getElementById("playbyplay").insertRow(1)
-                //row.innerHTML = "<td style='text-align:center'> TEST </td> <td> TEST </td> <td> TEST </td> <td style='text-align:center'> TEST </td> <td style='text-align:center'>TEST</td>"
+                
                 
                 if (data.sports_content.game.play.length > document.getElementById("playbyplay").tBodies[0].rows.length-1) {
                     //location.reload();
@@ -28,6 +27,8 @@
                     var game = "";
                     for(let i = document.getElementById("playbyplay").tBodies[0].rows.length-1; i < data.sports_content.game.play.length; i++){
                         console.log(data.sports_content.game.play[i])
+                        var row = document.getElementById("playbyplay").insertRow(1)
+                        row.innerHTML = "<td style='text-align:center'> " + data.sports_content.game.play[i].period + " </td> <td> " + data.sports_content.game.play[i].clock + " </td> <td> " + data.sports_content.game.play[i].description + " </td> <td style='text-align:center'> " + data.sports_content.game.play[i].visitor_score + " </td> <td style='text-align:center'>" + data.sports_content.game.play[i].home_score + "</td>"
                         break
                     }
                     $.each(data.sports_content.game.play, function (key, value) {
