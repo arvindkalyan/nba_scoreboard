@@ -1,12 +1,7 @@
 <h1>{% block title %}  NBA Scoreboard {{datestring[-4:-2]}}-{{datestring[-2:]}}-{{datestring[:4]}} {% endblock %}</h1>
 
 {% block head %}
-    
-    <script src="{{ url_for('static', filename='get_scoreboard.js') }}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
-
-    
+        
     <script>
         setInterval(function () {
             var datestring = $('#gameinfo').data().datestring;
