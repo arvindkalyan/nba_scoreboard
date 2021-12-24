@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect
 import urllib.request, json 
-from datetime import datetime
+from datetime import datetime, timedelta
 from pytz import timezone
 import pytz
 
@@ -29,8 +29,12 @@ def scoreboard(datestring):
     scoreboard = "https://data.nba.net/prod/v1/{}/scoreboard.json".format(datestring)
     with urllib.request.urlopen(scoreboard) as url:
         scores = json.loads(url.read().decode())
-    
-    return render_template('get_json.html', scores = scores["games"], datestring = datestring)
+    da = datetime.strptime(datestring, "%Y%m%d")+timedelta(1)
+    db = datetime.strptime(datestring, "%Y%m%d")-timedelta(1)
+
+    before = "{}{}{}".format(f"{db.year:02}", f"{db.month:02}", f"{db.day:02}")
+    after = "{}{}{}".format(f"{da.year:02}", f"{da.month:02}", f"{da.day:02}")
+    return render_template('scoreboard.html', scores = scores["games"], datestring = datestring, before=before, after=after)
 
 @app.route('/')
 def index():
@@ -42,7 +46,7 @@ def index():
 
 @app.route('/test') 
 def test(): 
-    return render_template('get_json.html')
+    return render_template('scoreboard.html')
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000)

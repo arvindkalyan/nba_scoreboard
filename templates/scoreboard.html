@@ -1,4 +1,5 @@
-<h1>{% block title %}  NBA Scoreboard {{datestring[-4:-2]}}-{{datestring[-2:]}}-{{datestring[:4]}} {% endblock %}</h1>
+<link rel="stylesheet" href="{{ url_for('static', filename= 'css/scoreboard.css') }}">
+<h1>{% block title %}  NBA Scoreboard {% endblock %}</h1>
 
 {% block head %}
         
@@ -44,12 +45,13 @@
         }, 1000);  // check about changes every 30 seconds
     </script>
 {% endblock %}
-
 <body>
     <meta id="gameinfo" data-datestring="{{datestring}}">
     {% extends 'base.html' %}
 
     {% block content %}
+    <h1><a class="arrow left" href="{{ before }}"></a> {{datestring[-4:-2]}}-{{datestring[-2:]}}-{{datestring[:4]}} <a class="arrow right" href="{{ after }}"></a></h1>
+    
     
     <div class="games">
     {% for item in scores %}
