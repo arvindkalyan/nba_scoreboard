@@ -1,88 +1,102 @@
 <link rel="stylesheet" href="{{ url_for('static', filename= 'css/scoreboard.css') }}">
-<h1>{% block title %}  NBA Scoreboard {% endblock %}</h1>
+<h1>{% block title %} NBA Scoreboard {% endblock %}</h1>
 
 {% block head %}
-        
-    <script>
-        setInterval(function () {
-            var datestring = $('#gameinfo').data().datestring;
-            // AJAX send request
-            $.ajax({
-                url: "https://data.nba.net/prod/v1/"+datestring+"/scoreboard.json",
-                type: "GET",
-                dataType: "json",
-                success: function (data) {
-                    //console.log(olddata)
-                    //console.log(JSON.stringify(olddata))
-                    //console.log(data.games)
-                    
-                    
-                        
-                        //location.reload();
-                        var game = "";
-                    $.each(data.games, function (key, value) {
-                        //console.log(document.getElementById(value.gameId+'clock').innerHTML)
-                        console.log(document.getElementsByClassName("clock")[key].innerHTML+document.getElementsByClassName("visitor")[key].innerHTML.substring(4)+document.getElementsByClassName("home")[key].innerHTML.substring(4))
-                        console.log(value.clock+value.vTeam.score+value.hTeam.score)
-                        if(value.clock+value.vTeam.score+value.hTeam.score !== document.getElementsByClassName("clock")[key].innerHTML+document.getElementsByClassName("visitor")[key].innerHTML.substring(4)+document.getElementsByClassName("home")[key].innerHTML.substring(4)){
-                            console.log("REQUIRES REFRESH")
-                            document.getElementsByClassName("clock")[key].innerHTML = value.clock
-                            document.getElementsByClassName("quarter")[key].innerHTML = "Quarter " + value.period.current
-                            document.getElementsByClassName("visitor")[key].innerHTML =  value.vTeam.triCode + " " + value.vTeam.score
-                            document.getElementsByClassName("home")[key].innerHTML =  value.hTeam.triCode + " " + value.hTeam.score
-                            //console.log(value); //this outputs response as Objects shown above
-                            
-                            //$("#"+value.gameId).html('<h2 class="game">' + value.vTeam.triCode + " " + value.vTeam.score + '</h2> <h2 class="game">' + value.hTeam.triCode + " " + value.hTeam.score + '</h2>');
-                        }
-                        
-                    });
-                    //console.log(game)
-                        
-                    
-                },
-                error: function (request, error) { }
-            });
-        }, 1000);  // check about changes every 30 seconds
-    </script>
+
+<script>
+    window.onload = function () {
+        document.getElementById("gamedate").addEventListener("change", function () {
+            console.log(this.value.replaceAll("-", "")); //e.g. 2015-11-13
+            if (this.value !== "") {
+                window.location = '/' + this.value.replaceAll("-", "");
+            }
+        });
+    }
+
+
+    setInterval(function () {
+
+        var datestring = $('#gameinfo').data().datestring;
+        // AJAX send request
+        $.ajax({
+            url: "https://data.nba.net/prod/v1/" + datestring + "/scoreboard.json",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                //console.log(olddata)
+                //console.log(JSON.stringify(olddata))
+                //console.log(data.games)
+
+
+
+                //location.reload();
+                var game = "";
+                $.each(data.games, function (key, value) {
+                    //console.log(document.getElementById(value.gameId+'clock').innerHTML)
+                    //console.log(document.getElementsByClassName("clock")[key].innerHTML + document.getElementsByClassName("visitor")[key].innerHTML.substring(4) + document.getElementsByClassName("home")[key].innerHTML.substring(4))
+                    //console.log(value.clock + value.vTeam.score + value.hTeam.score)
+                    if (value.clock + value.vTeam.score + value.hTeam.score !== document.getElementsByClassName("clock")[key].innerHTML + document.getElementsByClassName("visitor")[key].innerHTML.substring(4) + document.getElementsByClassName("home")[key].innerHTML.substring(4)) {
+                        //console.log("REQUIRES REFRESH")
+                        document.getElementsByClassName("clock")[key].innerHTML = value.clock
+                        document.getElementsByClassName("quarter")[key].innerHTML = "Quarter " + value.period.current
+                        document.getElementsByClassName("visitor")[key].innerHTML = value.vTeam.triCode + " " + value.vTeam.score
+                        document.getElementsByClassName("home")[key].innerHTML = value.hTeam.triCode + " " + value.hTeam.score
+                        //console.log(value); //this outputs response as Objects shown above
+
+                        //$("#"+value.gameId).html('<h2 class="game">' + value.vTeam.triCode + " " + value.vTeam.score + '</h2> <h2 class="game">' + value.hTeam.triCode + " " + value.hTeam.score + '</h2>');
+                    }
+
+                });
+                //console.log(game)
+
+
+            },
+            error: function (request, error) { }
+        });
+    }, 1000);  // check about changes every 30 seconds
+</script>
 {% endblock %}
+
 <body>
     <meta id="gameinfo" data-datestring="{{datestring}}">
     {% extends 'base.html' %}
 
     {% block content %}
-    <h1><a class="arrow left" href="{{ before }}"></a> {{datestring[-4:-2]}}-{{datestring[-2:]}}-{{datestring[:4]}} <a class="arrow right" href="{{ after }}"></a></h1>
-    
-    
+    <h1><a class="arrow left" href="{{ before }}"></a> {{datestring[-4:-2]}}-{{datestring[-2:]}}-{{datestring[:4]}} <a
+            class="arrow right" href="{{ after }}"></a></h1>
+
+    <input type="date" id="gamedate" value="{{datestring[:4]}}-{{datestring[-4:-2]}}-{{datestring[-2:]}}" />
+
     <div class="games">
-    {% for item in scores %}
+        {% for item in scores %}
 
-    <div class="game"> 
-        <h2 class="visitor">{{ item["vTeam"]["triCode"]  }} {{ item["vTeam"]["score"]}}</h2> 
-        <h2 class="home">{{ item["hTeam"]["triCode"] }} {{ item["hTeam"]["score"]}}</h2> 
-        
-        {% if item["statusNum"] == 1 %}
-            <h2 class="quarter">{{ item["startTimeEastern"] }}</h2> 
+        <div class="game">
+            <h2 class="visitor">{{ item["vTeam"]["triCode"] }} {{ item["vTeam"]["score"]}}</h2>
+            <h2 class="home">{{ item["hTeam"]["triCode"] }} {{ item["hTeam"]["score"]}}</h2>
+
+            {% if item["statusNum"] == 1 %}
+            <h2 class="quarter">{{ item["startTimeEastern"] }}</h2>
             <h2 class="clock"></h2>
-        {% endif %}
-        
-        {% if item["statusNum"] == 2 %}
-            <h2 class="quarter"> Quarter {{ item["period"]["current"] }} </h2> 
-            <h2 class="clock">{{ item["clock"] }}</h2> 
-        {% endif %}
+            {% endif %}
 
-        {% if item["statusNum"] == 3 %}
-            <h2 class="quarter">FINAL</h2> 
+            {% if item["statusNum"] == 2 %}
+            <h2 class="quarter"> Quarter {{ item["period"]["current"] }} </h2>
+            <h2 class="clock">{{ item["clock"] }}</h2>
+            {% endif %}
+
+            {% if item["statusNum"] == 3 %}
+            <h2 class="quarter">FINAL</h2>
             <h2 class="clock"></h2>
-        {% endif %}
-        
-        
-        
+            {% endif %}
 
-    </div> 
-    <a href="{{ '/%s/%s'%(datestring, item.gameId) }}">Play-by-Play </a>
-    <hr>
-        
-    {% endfor %}
+
+
+
+        </div>
+        <a href="{{ '/%s/%s'%(datestring, item.gameId) }}">Play-by-Play </a>
+        <hr>
+
+        {% endfor %}
     </div>
     {% endblock %}
 </body>
