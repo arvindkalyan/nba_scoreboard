@@ -1,9 +1,19 @@
 <link rel="stylesheet" href="{{ url_for('static', filename= 'css/scoreboard.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <h1>{% block title %} NBA Scoreboard {% endblock %}</h1>
 
 {% block head %}
 
 <script>
+    
+    function showCalendar() {
+        var x = document.getElementById("gamedate");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
     window.onload = function () {
         document.getElementById("gamedate").addEventListener("change", function () {
             console.log(this.value.replaceAll("-", "")); //e.g. 2015-11-13
@@ -12,8 +22,6 @@
             }
         });
     }
-
-
     setInterval(function () {
 
         var datestring = $('#gameinfo').data().datestring;
@@ -62,10 +70,16 @@
     {% extends 'base.html' %}
 
     {% block content %}
-    <h1><a class="arrow left" href="{{ before }}"></a> {{datestring[-4:-2]}}-{{datestring[-2:]}}-{{datestring[:4]}} <a
-            class="arrow right" href="{{ after }}"></a></h1>
+    <h1><a class="arrow left" href="{{ before }}"></a> 
+        {{datestring[-4:-2]}}-{{datestring[-2:]}}-{{datestring[:4]}}
+        <a class="fa fa-calendar" onClick="showCalendar();"></a>
+        <a class="arrow right" href="{{ after }}"></a>
+    </h1>
+    
 
-    <input type="date" id="gamedate" value="{{datestring[:4]}}-{{datestring[-4:-2]}}-{{datestring[-2:]}}" />
+    <input type="date" id="gamedate" style="display: none;" value="{{datestring[:4]}}-{{datestring[-4:-2]}}-{{datestring[-2:]}}" />
+
+    
 
     <div class="games">
         {% for item in scores %}
