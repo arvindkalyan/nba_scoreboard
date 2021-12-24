@@ -1,6 +1,8 @@
 from flask import Flask, render_template, redirect
 import urllib.request, json 
-import datetime
+from datetime import datetime
+from pytz import timezone
+import pytz
 
 app = Flask(__name__)
 
@@ -32,7 +34,8 @@ def scoreboard(datestring):
 
 @app.route('/')
 def index():
-    dt = datetime.datetime.today()
+    date = datetime.now(tz=pytz.utc)
+    dt = date.astimezone(timezone('US/Pacific'))
     datestring = "{}{}{}".format(f"{dt.year:02}", f"{dt.month:02}", f"{dt.day:02}")
     return scoreboard(datestring)
     #return redirect("/"+datestring, code=302)

@@ -26,7 +26,7 @@
                         if(value.clock+value.vTeam.score+value.hTeam.score !== document.getElementsByClassName("clock")[key].innerHTML+document.getElementsByClassName("visitor")[key].innerHTML.substring(4)+document.getElementsByClassName("home")[key].innerHTML.substring(4)){
                             console.log("REQUIRES REFRESH")
                             document.getElementsByClassName("clock")[key].innerHTML = value.clock
-                            
+                            document.getElementsByClassName("quarter")[key].innerHTML = "Quarter " + value.period.current
                             document.getElementsByClassName("visitor")[key].innerHTML =  value.vTeam.triCode + " " + value.vTeam.score
                             document.getElementsByClassName("home")[key].innerHTML =  value.hTeam.triCode + " " + value.hTeam.score
                             //console.log(value); //this outputs response as Objects shown above
@@ -59,9 +59,8 @@
         <h2 class="home">{{ item["hTeam"]["triCode"] }} {{ item["hTeam"]["score"]}}</h2> 
         
         {% if item["statusNum"] == 1 %}
-            <h2 class="info"> {{ item["startTimeEastern"] }} </h2> 
+            <h2 class="quarter">{{ item["startTimeEastern"] }}</h2> 
             <h2 class="clock"></h2>
-            <h2 class="quarter"></h2>
         {% endif %}
         
         {% if item["statusNum"] == 2 %}
@@ -70,9 +69,8 @@
         {% endif %}
 
         {% if item["statusNum"] == 3 %}
-            <h2 class="info"> FINAL </h2> 
+            <h2 class="quarter">FINAL</h2> 
             <h2 class="clock"></h2>
-            <h2 class="quarter"> </h2>
         {% endif %}
         
         
