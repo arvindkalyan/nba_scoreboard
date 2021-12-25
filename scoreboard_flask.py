@@ -16,9 +16,14 @@ def box(datestring, gamestring):
     boxscore = "https://data.nba.net/prod/v1/{}/{}_boxscore.json".format(datestring, gamestring)
     with urllib.request.urlopen(boxscore) as url:
         box = json.loads(url.read().decode())
-    return render_template('box.html', box=box, datestring = datestring, gamestring = gamestring, 
-        visitor=box["basicGameData"]["vTeam"]["triCode"], home=box["basicGameData"]["hTeam"]["triCode"],
-        vID=box["basicGameData"]["vTeam"]["teamId"], hID=box["basicGameData"]["hTeam"]["teamId"])
+    if "stats" in box:
+        return render_template('box.html', activePlayers=box["stats"]["activePlayers"], datestring = datestring, gamestring = gamestring, 
+            visitor=box["basicGameData"]["vTeam"]["triCode"], home=box["basicGameData"]["hTeam"]["triCode"],
+            vID=box["basicGameData"]["vTeam"]["teamId"], hID=box["basicGameData"]["hTeam"]["teamId"])
+    else:
+        return render_template('box.html', activePlayers={}, datestring = datestring, gamestring = gamestring, 
+            visitor=box["basicGameData"]["vTeam"]["triCode"], home=box["basicGameData"]["hTeam"]["triCode"],
+            vID=box["basicGameData"]["vTeam"]["teamId"], hID=box["basicGameData"]["hTeam"]["teamId"])
 
 
 @app.route('/<string:datestring>/<string:gamestring>') 

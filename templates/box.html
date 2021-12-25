@@ -3,8 +3,6 @@
     setInterval(function () {
         var datestring = $('#gameinfo').data().datestring;
         var gamestring = $('#gameinfo').data().gamestring;
-        var box = $('#gameinfo').data().box;
-        
         // AJAX send request
         $.ajax({
             url: "https://data.nba.net/prod/v1/" + datestring + "/" + gamestring + "_boxscore.json",
@@ -69,7 +67,7 @@
             <th>TO</th>
             <th>+/-</th>
         </tr>
-        {% for item in box["stats"]["activePlayers"] %}
+        {% for item in activePlayers %}
 
         {% if item["teamId"] == vID %}
         <tr id='{{item["personId"]}}'>
@@ -117,7 +115,7 @@
             <th>TO</th>
             <th>+/-</th>
         </tr>
-        {% for item in box["stats"]["activePlayers"] %}
+        {% for item in activePlayers %}
         {% if item["teamId"] == hID %}
         <tr id='{{item["personId"]}}'>
             <td> {{item["firstName"]}} {{item["lastName"]}}</td>
