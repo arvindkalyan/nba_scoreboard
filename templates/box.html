@@ -22,7 +22,7 @@
                     var teamLine = document.getElementById(data.basicGameData.vTeam.teamId+"-total");
                     for (var i = 0, cell; cell = teamLine.cells[i]; i++) {
                         var attr = cell.className
-                        if(data.stats.vTeam.totals[attr] != cell.innerHTML){
+                        if(attr != "" && data.stats.vTeam.totals[attr] != cell.innerHTML){
                             cell.innerHTML = data.stats.vTeam.totals[attr]
                         }
                     }  
@@ -30,7 +30,7 @@
                     var teamLine = document.getElementById(data.basicGameData.hTeam.teamId+"-total");
                     for (var i = 0, cell; cell = teamLine.cells[i]; i++) {
                         var attr = cell.className
-                        if(data.stats.hTeam.totals[attr] != cell.innerHTML){
+                        if(attr != "" && data.stats.hTeam.totals[attr] != cell.innerHTML){
                             cell.innerHTML = data.stats.hTeam.totals[attr]
                         }
                     }  
