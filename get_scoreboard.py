@@ -9,12 +9,16 @@ import urllib.request, json
 
 scoreboard = "https://data.nba.net/prod/v1/20211212/scoreboard.json"
 pbp = "https://data.nba.net/data/10s/json/cms/noseason/game/20211212/0022100403/pbp_all.json"
+boxscore = "https://data.nba.net/prod/v1/20211212/0022100403_boxscore.json"
 
 with urllib.request.urlopen(scoreboard) as url:
     scores = json.loads(url.read().decode())
 
 with urllib.request.urlopen(pbp) as url:
     plays = json.loads(url.read().decode())
+
+with urllib.request.urlopen(boxscore) as url:
+    box = json.loads(url.read().decode())
 
 import json
 import time
@@ -34,7 +38,9 @@ def get_scores(data):
 def get_last_play(data):
     return data["sports_content"]["game"]["play"][-1]["description"]
     
+print(box["stats"])
 
+'''
 while True:
     print(datetime.now())
     last_play = get_last_play(plays)
@@ -42,4 +48,4 @@ while True:
     #print(get_scores(scores))
     plays = refresh_data(pbp)
     time.sleep(0.5)
-    
+''' 

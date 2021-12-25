@@ -47,8 +47,10 @@
 <body>
     <meta id="gameinfo" data-datestring="{{datestring}}" data-gamestring="{{gamestring}}">
     {% extends 'base.html' %}
-
+    
     {% block content %}
+    <a href="{{ '/'+datestring }}">Home</a>
+    <a href="{{ '/%s/%s/box'%(datestring, gamestring) }}">Box Score</a>
     <table id="playbyplay">
         <tr>
             <th>Quarter</th>

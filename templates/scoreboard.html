@@ -34,9 +34,6 @@
                 //console.log(olddata)
                 //console.log(JSON.stringify(olddata))
                 //console.log(data.games)
-
-
-
                 //location.reload();
                 var game = "";
                 $.each(data.games, function (key, value) {
@@ -103,11 +100,9 @@
             <h2 class="clock"></h2>
             {% endif %}
 
-
-
-
         </div>
         <a href="{{ '/%s/%s'%(datestring, item.gameId) }}">Play-by-Play </a>
+        <a href="{{ '/%s/%s/box'%(datestring, item.gameId) }}">Box Score </a>
         <hr>
 
         {% endfor %}

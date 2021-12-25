@@ -1,0 +1,150 @@
+<script src="{{url_for('static', filename='js/sorttable.js')}}"></script>
+<script>
+    setInterval(function () {
+        var datestring = $('#gameinfo').data().datestring;
+        var gamestring = $('#gameinfo').data().gamestring;
+        var box = $('#gameinfo').data().box;
+        
+        // AJAX send request
+        $.ajax({
+            url: "https://data.nba.net/prod/v1/" + datestring + "/" + gamestring + "_boxscore.json",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+
+                    $.each(data.stats.activePlayers, function (key, value) {
+                        var playerRow = document.getElementById(value.personId);
+                        for (var i = 0, cell; cell = playerRow.cells[i]; i++) {
+                            if(cell.className != "" && cell.innerHTML != value[cell.className]){
+                                cell.innerHTML = value[cell.className];
+                            }
+                            //console.log(cell.innerHTML)
+                            //console.log(cell.className)
+                            //console.log(value[cell.className])
+                        }                       
+                                     
+                        //console.log(value); //this outputs response as Objects shown above
+                        //$(".playbyplay").prepend(
+                         //   "<tr> <td style='text-align:center'>" + value.period + "</td> <td>" + value.clock + "</td> <td>" + value.description + "</td> <td style='text-align:center'>" + value.visitor_score + "</td> <td style='text-align:center'>"+ value.home_score + "</td> </tr>"
+                        //);
+                    });
+                    //console.log(game)
+
+                
+            },
+            error: function (request, error) { }
+        });
+    }, 3000);  // check about changes every 30 seconds
+</script>
+
+<h1>{% block title %} {{visitor}} @ {{home}} Box Score {{datestring[-4:-2]}}-{{datestring[-2:]}}-{{datestring[:4]}}
+    {% endblock %}</h1>
+
+
+<body>
+    
+    <meta id="gameinfo" data-datestring="{{datestring}}" data-gamestring="{{gamestring}}">
+    {% extends 'base.html' %}
+    {% block content %}
+    <a href="{{ '/'+datestring }}">Home</a>
+    <a href="{{ '/%s/%s'%(datestring, gamestring) }}">Play-by-Play </a>
+    <table id="visitorbox" class="sortable">
+        <tr>
+            <th>Name</th>
+            <th class="sorttable_nosort">MIN</th>
+            <th>PTS</th>
+            <th>FGM</th>
+            <th>FGA</th>
+            <th>FG%</th>
+            <th>3PM</th>
+            <th>3PA</th>
+            <th>3P%</th>
+            <th>REB</th>
+            <th>DREB</th>
+            <th>OREB</th>
+            <th>AST</th>
+            <th>STL</th>
+            <th>BLK</th>
+            <th>FOULS</th>
+            <th>TO</th>
+            <th>+/-</th>
+        </tr>
+        {% for item in box["stats"]["activePlayers"] %}
+
+        {% if item["teamId"] == vID %}
+        <tr id='{{item["personId"]}}'>
+            <td> {{item["firstName"]}} {{item["lastName"]}}</td>
+            <td class="min" style='text-align:center'>{{item["min"]}}</td>
+            <td class="points" style='text-align:center'>{{item["points"]}}</td>
+            <td class="fgm" style='text-align:center'>{{item["fgm"]}}</td>
+            <td class="fga" style='text-align:center'>{{item["fga"]}}</td>
+            <td class="fgp" style='text-align:center'>{{item["fgp"]}}</td>
+            <td class="tpm" style='text-align:center'>{{item["tpm"]}}</td>
+            <td class="tpa" style='text-align:center'>{{item["tpa"]}}</td>
+            <td class="tpp" style='text-align:center'>{{item["tpp"]}}</td>
+            <td class="totReb" style='text-align:center'>{{item["totReb"]}}</td>
+            <td class="defReb" style='text-align:center'>{{item["defReb"]}}</td>
+            <td class="offReb" style='text-align:center'>{{item["offReb"]}}</td>
+            <td class="assists" style='text-align:center'>{{item["assists"]}}</td>
+            <td class="steals" style='text-align:center'>{{item["steals"]}}</td>
+            <td class="blocks" style='text-align:center'>{{item["blocks"]}}</td>
+            <td class="pFouls" style='text-align:center'>{{item["pFouls"]}}</td>
+            <td class="turnovers" style='text-align:center'>{{item["turnovers"]}}</td>
+            <td class="plusMinus" style='text-align:center'>{{item["plusMinus"]}}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </table>
+
+    <table id="homebox" class="sortable">
+        <tr>
+            <th>Name</th>
+            <th class="sorttable_nosort">MIN</th>
+            <th>PTS</th>
+            <th>FGM</th>
+            <th>FGA</th>
+            <th>FG%</th>
+            <th>3PM</th>
+            <th>3PA</th>
+            <th>3P%</th>
+            <th>REB</th>
+            <th>DREB</th>
+            <th>OREB</th>
+            <th>AST</th>
+            <th>STL</th>
+            <th>BLK</th>
+            <th>FOULS</th>
+            <th>TO</th>
+            <th>+/-</th>
+        </tr>
+        {% for item in box["stats"]["activePlayers"] %}
+        {% if item["teamId"] == hID %}
+        <tr id='{{item["personId"]}}'>
+            <td> {{item["firstName"]}} {{item["lastName"]}}</td>
+            <td class="min" style='text-align:center'>{{item["min"]}}</td>
+            <td class="points" style='text-align:center'>{{item["points"]}}</td>
+            <td class="fgm" style='text-align:center'>{{item["fgm"]}}</td>
+            <td class="fga" style='text-align:center'>{{item["fga"]}}</td>
+            <td class="fgp" style='text-align:center'>{{item["fgp"]}}</td>
+            <td class="tpm" style='text-align:center'>{{item["tpm"]}}</td>
+            <td class="tpa" style='text-align:center'>{{item["tpa"]}}</td>
+            <td class="tpp" style='text-align:center'>{{item["tpp"]}}</td>
+            <td class="totReb" style='text-align:center'>{{item["totReb"]}}</td>
+            <td class="defReb" style='text-align:center'>{{item["defReb"]}}</td>
+            <td class="offReb" style='text-align:center'>{{item["offReb"]}}</td>
+            <td class="assists" style='text-align:center'>{{item["assists"]}}</td>
+            <td class="steals" style='text-align:center'>{{item["steals"]}}</td>
+            <td class="blocks" style='text-align:center'>{{item["blocks"]}}</td>
+            <td class="pFouls" style='text-align:center'>{{item["pFouls"]}}</td>
+            <td class="turnovers" style='text-align:center'>{{item["turnovers"]}}</td>
+            <td class="plusMinus" style='text-align:center'>{{item["plusMinus"]}}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+
+    </table>
+
+
+
+    {% endblock %}
+</body>
