@@ -17,13 +17,15 @@ def box(datestring, gamestring):
     with urllib.request.urlopen(boxscore) as url:
         box = json.loads(url.read().decode())
     if "stats" in box:
-        return render_template('box.html', activePlayers=box["stats"]["activePlayers"], datestring = datestring, gamestring = gamestring, 
+        return render_template('box.html', stats=box["stats"], datestring = datestring, gamestring = gamestring, 
             visitor=box["basicGameData"]["vTeam"]["triCode"], home=box["basicGameData"]["hTeam"]["triCode"],
-            vID=box["basicGameData"]["vTeam"]["teamId"], hID=box["basicGameData"]["hTeam"]["teamId"])
+            vID=box["basicGameData"]["vTeam"]["teamId"], hID=box["basicGameData"]["hTeam"]["teamId"],
+            gameData=box["basicGameData"])
     else:
-        return render_template('box.html', activePlayers={}, datestring = datestring, gamestring = gamestring, 
+        return render_template('box.html', stats={}, datestring = datestring, gamestring = gamestring, 
             visitor=box["basicGameData"]["vTeam"]["triCode"], home=box["basicGameData"]["hTeam"]["triCode"],
-            vID=box["basicGameData"]["vTeam"]["teamId"], hID=box["basicGameData"]["hTeam"]["teamId"])
+            vID=box["basicGameData"]["vTeam"]["teamId"], hID=box["basicGameData"]["hTeam"]["teamId"],
+            gameData=box["basicGameData"])
 
 
 @app.route('/<string:datestring>/<string:gamestring>') 

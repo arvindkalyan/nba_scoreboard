@@ -38,7 +38,7 @@ def get_scores(data):
 def get_last_play(data):
     return data["sports_content"]["game"]["play"][-1]["description"]
     
-print(box["stats"])
+print(box["stats"]["vTeam"])
 
 '''
 while True:

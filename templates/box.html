@@ -16,16 +16,27 @@
                             if(cell.className != "" && cell.innerHTML != value[cell.className]){
                                 cell.innerHTML = value[cell.className];
                             }
-                            //console.log(cell.innerHTML)
-                            //console.log(cell.className)
-                            //console.log(value[cell.className])
+
                         }                       
                                      
-                        //console.log(value); //this outputs response as Objects shown above
-                        //$(".playbyplay").prepend(
-                         //   "<tr> <td style='text-align:center'>" + value.period + "</td> <td>" + value.clock + "</td> <td>" + value.description + "</td> <td style='text-align:center'>" + value.visitor_score + "</td> <td style='text-align:center'>"+ value.home_score + "</td> </tr>"
-                        //);
                     });
+
+                    $.each(data.basicGameData.vTeam.linescore, function (key, value) {
+                        var teamLine = document.getElementById(data.basicGameData.vTeam.teamId);
+                        if(value.score != teamLine.cells[key+1].innerHTML){
+                            teamLine.cells[key+1].innerHTML = value.score
+                        }
+                                     
+                    });
+
+                    $.each(data.basicGameData.hTeam.linescore, function (key, value) {
+                        var teamLine = document.getElementById(data.basicGameData.hTeam.teamId);
+                        if(value.score == teamLine.cells[key+1].innerHTML){
+                            teamLine.cells[key+1].innerHTML = value.score
+                        }
+                                     
+                    });
+                    
                     //console.log(game)
 
                 
@@ -46,7 +57,33 @@
     {% block content %}
     <a href="{{ '/'+datestring }}">Home</a>
     <a href="{{ '/%s/%s'%(datestring, gamestring) }}">Play-by-Play </a>
-    <table id="visitorbox" class="sortable">
+    
+    <table class="linescore">
+        <tr>
+            <th>Team</th>
+            <th>Q1</th>
+            <th>Q2</th>
+            <th>Q3</th>
+            <th>Q4</th>
+            <th>Total</th>
+        </tr>
+        <tr id='{{vID}}'>
+            <td>{{visitor}}</td>
+            {% for item in gameData["vTeam"]["linescore"] %}
+                <td>{{item["score"]}}</td>
+            {% endfor %}
+            <td style="font-weight:bold">{{gameData["vTeam"]["score"]}}</td>
+        </tr>
+        <tr id='{{hID}}'>  
+            <td>{{home}}</td>
+            {% for item in gameData["hTeam"]["linescore"] %}
+                <td>{{item["score"]}}</td>
+            {% endfor %}
+            <td style="font-weight:bold">{{gameData["hTeam"]["score"]}}</td>
+        </tr>
+    </table>
+    
+    <table class="box" class="sortable">
         <tr>
             <th>Name</th>
             <th class="sorttable_nosort">MIN</th>
@@ -67,7 +104,7 @@
             <th>TO</th>
             <th>+/-</th>
         </tr>
-        {% for item in activePlayers %}
+        {% for item in  stats["activePlayers"] %}
 
         {% if item["teamId"] == vID %}
         <tr id='{{item["personId"]}}'>
@@ -92,9 +129,10 @@
         </tr>
         {% endif %}
         {% endfor %}
+        
     </table>
 
-    <table id="homebox" class="sortable">
+    <table class="box" class="sortable">
         <tr>
             <th>Name</th>
             <th class="sorttable_nosort">MIN</th>
@@ -115,7 +153,7 @@
             <th>TO</th>
             <th>+/-</th>
         </tr>
-        {% for item in activePlayers %}
+        {% for item in stats["activePlayers"] %}
         {% if item["teamId"] == hID %}
         <tr id='{{item["personId"]}}'>
             <td> {{item["firstName"]}} {{item["lastName"]}}</td>
