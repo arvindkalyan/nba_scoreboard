@@ -93,16 +93,19 @@
             {% if item["statusNum"] == 2 %}
             <h2 class="quarter"> Quarter {{ item["period"]["current"] }} </h2>
             <h2 class="clock">{{ item["clock"] }}</h2>
+            <a href="{{ '/%s/%s'%(datestring, item.gameId) }}">Play-by-Play </a>
+            <a href="{{ '/%s/%s/box'%(datestring, item.gameId) }}">Box Score </a>
             {% endif %}
 
             {% if item["statusNum"] == 3 %}
             <h2 class="quarter">FINAL</h2>
             <h2 class="clock"></h2>
+            <a href="{{ '/%s/%s'%(datestring, item.gameId) }}">Play-by-Play </a>
+            <a href="{{ '/%s/%s/box'%(datestring, item.gameId) }}">Box Score </a>
             {% endif %}
 
         </div>
-        <a href="{{ '/%s/%s'%(datestring, item.gameId) }}">Play-by-Play </a>
-        <a href="{{ '/%s/%s/box'%(datestring, item.gameId) }}">Box Score </a>
+        
         <hr>
 
         {% endfor %}

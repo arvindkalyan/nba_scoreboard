@@ -103,7 +103,7 @@
         </tr>
     </table>
     
-    <table class="box" class="sortable">
+    <table  class="sortable">
         <tr>
             <th>Name</th>
             <th class="sorttable_nosort">MIN</th>
@@ -149,7 +149,7 @@
         </tr>
         {% endif %}
         {% endfor %}
-        
+        <tfoot>
         <tr id='{{vID}}-total'>
             <td style='font-weight:bold'>Totals</td>
             <td></td>
@@ -169,10 +169,10 @@
             <td class="pFouls" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["pFouls"]}}</td>
             <td class="turnovers" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["turnovers"]}}</td>
         </tr>
-        
+    </tfoot>
     </table>
 
-    <table class="box" class="sortable">
+    <table class="sortable">
         <tr>
             <th>Name</th>
             <th class="sorttable_nosort">MIN</th>
@@ -217,6 +217,7 @@
         </tr>
         {% endif %}
         {% endfor %}
+        <tfoot>
         <tr id='{{hID}}-total'>
             <td style='font-weight:bold'>Totals</td>
             <td></td>
@@ -236,7 +237,7 @@
             <td class="pFouls" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["pFouls"]}}</td>
             <td class="turnovers" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["turnovers"]}}</td>
         </tr>
-
+    </tfoot>
     </table>
 
 
