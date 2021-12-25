@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="{{ url_for('static', filename= 'css/box.css') }}">
 <script src="{{url_for('static', filename='js/sorttable.js')}}"></script>
 <script>
     setInterval(function () {
@@ -9,7 +10,8 @@
             type: "GET",
             dataType: "json",
             success: function (data) {
-
+                    //var vBox = document.getElementById("vBox")
+                    //sorttable.makeSortable(vBox);
                     $.each(data.stats.activePlayers, function (key, value) {
                         var playerRow = document.getElementById(value.personId);
                         for (var i = 0, cell; cell = playerRow.cells[i]; i++) {
@@ -37,7 +39,7 @@
 
                     var teamLine = document.getElementById(data.basicGameData.vTeam.teamId);
                     $.each(data.basicGameData.vTeam.linescore, function (key, value) {
-                        if(value.score == teamLine.cells[key+1].innerHTML){
+                        if(value.score != teamLine.cells[key+1].innerHTML){
                             teamLine.cells[key+1].innerHTML = value.score
                         }            
                     });
@@ -48,7 +50,7 @@
                     
                     var teamLine = document.getElementById(data.basicGameData.hTeam.teamId);
                     $.each(data.basicGameData.hTeam.linescore, function (key, value) {
-                        if(value.score == teamLine.cells[key+1].innerHTML){
+                        if(value.score != teamLine.cells[key+1].innerHTML){
                             teamLine.cells[key+1].innerHTML = value.score
                         }           
                     });
@@ -78,7 +80,7 @@
     <a href="{{ '/'+datestring }}">Home</a>
     <a href="{{ '/%s/%s'%(datestring, gamestring) }}">Play-by-Play </a>
     
-    <table class="linescore">
+    <table id="vBox" class="linescore">
         <tr>
             <th>Team</th>
             <th>Q1</th>
@@ -103,14 +105,18 @@
         </tr>
     </table>
     
-    <table  class="sortable">
+    <table class="sortable">
         <tr>
-            <th>Name</th>
+            <th>#</th>
+            <th style='text-align:left'>Name</th>
             <th class="sorttable_nosort">MIN</th>
             <th>PTS</th>
             <th>FGM</th>
             <th>FGA</th>
             <th>FG%</th>
+            <th>FTM</th>
+            <th>FTA</th>
+            <th>FT%</th>
             <th>3PM</th>
             <th>3PA</th>
             <th>3P%</th>
@@ -128,12 +134,16 @@
 
         {% if item["teamId"] == vID %}
         <tr id='{{item["personId"]}}'>
+            <td style='text-align:center'> {{item["jersey"]}}</td>
             <td> {{item["firstName"]}} {{item["lastName"]}}</td>
             <td class="min" style='text-align:center'>{{item["min"]}}</td>
             <td class="points" style='text-align:center'>{{item["points"]}}</td>
             <td class="fgm" style='text-align:center'>{{item["fgm"]}}</td>
             <td class="fga" style='text-align:center'>{{item["fga"]}}</td>
             <td class="fgp" style='text-align:center'>{{item["fgp"]}}</td>
+            <td class="ftm" style='text-align:center'>{{item["ftm"]}}</td>
+            <td class="fta" style='text-align:center'>{{item["fta"]}}</td>
+            <td class="ftp" style='text-align:center'>{{item["ftp"]}}</td>
             <td class="tpm" style='text-align:center'>{{item["tpm"]}}</td>
             <td class="tpa" style='text-align:center'>{{item["tpa"]}}</td>
             <td class="tpp" style='text-align:center'>{{item["tpp"]}}</td>
@@ -146,6 +156,7 @@
             <td class="pFouls" style='text-align:center'>{{item["pFouls"]}}</td>
             <td class="turnovers" style='text-align:center'>{{item["turnovers"]}}</td>
             <td class="plusMinus" style='text-align:center'>{{item["plusMinus"]}}</td>
+           
         </tr>
         {% endif %}
         {% endfor %}
@@ -153,10 +164,14 @@
         <tr id='{{vID}}-total'>
             <td style='font-weight:bold'>Totals</td>
             <td></td>
+            <td></td>
             <td class="points" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["points"]}}</td>
             <td class="fgm" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["fgm"]}}</td>
             <td class="fga" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["fga"]}}</td>
             <td class="fgp" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["fgp"]}}</td>
+            <td class="ftm" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["ftm"]}}</td>
+            <td class="fta" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["fta"]}}</td>
+            <td class="ftp" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["ftp"]}}</td>
             <td class="tpm" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["tpm"]}}</td>
             <td class="tpa" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["tpa"]}}</td>
             <td class="tpp" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["tpp"]}}</td>
@@ -174,12 +189,16 @@
 
     <table class="sortable">
         <tr>
-            <th>Name</th>
+            <th>#</th>
+            <th style='text-align:left'>Name</th>
             <th class="sorttable_nosort">MIN</th>
             <th>PTS</th>
             <th>FGM</th>
             <th>FGA</th>
             <th>FG%</th>
+            <th>FTM</th>
+            <th>FTA</th>
+            <th>FT%</th>
             <th>3PM</th>
             <th>3PA</th>
             <th>3P%</th>
@@ -196,12 +215,16 @@
         {% for item in stats["activePlayers"] %}
         {% if item["teamId"] == hID %}
         <tr id='{{item["personId"]}}'>
+            <td style='text-align:center'>{{item["jersey"]}}</td>
             <td> {{item["firstName"]}} {{item["lastName"]}}</td>
             <td class="min" style='text-align:center'>{{item["min"]}}</td>
             <td class="points" style='text-align:center'>{{item["points"]}}</td>
             <td class="fgm" style='text-align:center'>{{item["fgm"]}}</td>
             <td class="fga" style='text-align:center'>{{item["fga"]}}</td>
             <td class="fgp" style='text-align:center'>{{item["fgp"]}}</td>
+            <td class="ftm" style='text-align:center'>{{item["ftm"]}}</td>
+            <td class="fta" style='text-align:center'>{{item["fta"]}}</td>
+            <td class="ftp" style='text-align:center'>{{item["ftp"]}}</td>
             <td class="tpm" style='text-align:center'>{{item["tpm"]}}</td>
             <td class="tpa" style='text-align:center'>{{item["tpa"]}}</td>
             <td class="tpp" style='text-align:center'>{{item["tpp"]}}</td>
@@ -214,6 +237,7 @@
             <td class="pFouls" style='text-align:center'>{{item["pFouls"]}}</td>
             <td class="turnovers" style='text-align:center'>{{item["turnovers"]}}</td>
             <td class="plusMinus" style='text-align:center'>{{item["plusMinus"]}}</td>
+            
         </tr>
         {% endif %}
         {% endfor %}
@@ -221,10 +245,14 @@
         <tr id='{{hID}}-total'>
             <td style='font-weight:bold'>Totals</td>
             <td></td>
+            <td></td>
             <td class="points" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["points"]}}</td>
             <td class="fgm" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["fgm"]}}</td>
             <td class="fga" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["fga"]}}</td>
             <td class="fgp" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["fgp"]}}</td>
+            <td class="ftm" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["ftm"]}}</td>
+            <td class="fta" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["fta"]}}</td>
+            <td class="ftp" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["ftp"]}}</td>
             <td class="tpm" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["tpm"]}}</td>
             <td class="tpa" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["tpa"]}}</td>
             <td class="tpp" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["tpp"]}}</td>
