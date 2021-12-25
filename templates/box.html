@@ -16,26 +16,46 @@
                             if(cell.className != "" && cell.innerHTML != value[cell.className]){
                                 cell.innerHTML = value[cell.className];
                             }
-
-                        }                       
-                                     
+                        }                               
                     });
 
-                    $.each(data.basicGameData.vTeam.linescore, function (key, value) {
-                        var teamLine = document.getElementById(data.basicGameData.vTeam.teamId);
-                        if(value.score != teamLine.cells[key+1].innerHTML){
-                            teamLine.cells[key+1].innerHTML = value.score
+                    var teamLine = document.getElementById(data.basicGameData.vTeam.teamId+"-total");
+                    for (var i = 0, cell; cell = teamLine.cells[i]; i++) {
+                        var attr = cell.className
+                        if(data.stats.vTeam.totals[attr] != cell.innerHTML){
+                            cell.innerHTML = data.stats.vTeam.totals[attr]
                         }
-                                     
-                    });
+                    }  
+                
+                    var teamLine = document.getElementById(data.basicGameData.hTeam.teamId+"-total");
+                    for (var i = 0, cell; cell = teamLine.cells[i]; i++) {
+                        var attr = cell.className
+                        if(data.stats.hTeam.totals[attr] != cell.innerHTML){
+                            cell.innerHTML = data.stats.hTeam.totals[attr]
+                        }
+                    }  
 
-                    $.each(data.basicGameData.hTeam.linescore, function (key, value) {
-                        var teamLine = document.getElementById(data.basicGameData.hTeam.teamId);
+                    var teamLine = document.getElementById(data.basicGameData.vTeam.teamId);
+                    $.each(data.basicGameData.vTeam.linescore, function (key, value) {
                         if(value.score == teamLine.cells[key+1].innerHTML){
                             teamLine.cells[key+1].innerHTML = value.score
-                        }
-                                     
+                        }            
                     });
+
+                    if (teamLine.cells[teamLine.cells.length-1].innerHTML != data.basicGameData.vTeam.score){
+                        teamLine.cells[teamLine.cells.length-1].innerHTML = data.basicGameData.vTeam.score
+                    }
+                    
+                    var teamLine = document.getElementById(data.basicGameData.hTeam.teamId);
+                    $.each(data.basicGameData.hTeam.linescore, function (key, value) {
+                        if(value.score == teamLine.cells[key+1].innerHTML){
+                            teamLine.cells[key+1].innerHTML = value.score
+                        }           
+                    });
+
+                    if (teamLine.cells[teamLine.cells.length-1].innerHTML != data.basicGameData.hTeam.score){
+                        teamLine.cells[teamLine.cells.length-1].innerHTML = data.basicGameData.hTeam.score
+                    }
                     
                     //console.log(game)
 
@@ -130,6 +150,26 @@
         {% endif %}
         {% endfor %}
         
+        <tr id='{{vID}}-total'>
+            <td style='font-weight:bold'>Totals</td>
+            <td></td>
+            <td class="points" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["points"]}}</td>
+            <td class="fgm" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["fgm"]}}</td>
+            <td class="fga" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["fga"]}}</td>
+            <td class="fgp" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["fgp"]}}</td>
+            <td class="tpm" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["tpm"]}}</td>
+            <td class="tpa" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["tpa"]}}</td>
+            <td class="tpp" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["tpp"]}}</td>
+            <td class="totReb" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["totReb"]}}</td>
+            <td class="defReb" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["defReb"]}}</td>
+            <td class="offReb" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["offReb"]}}</td>
+            <td class="assists" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["assists"]}}</td>
+            <td class="steals" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["steals"]}}</td>
+            <td class="blocks" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["blocks"]}}</td>
+            <td class="pFouls" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["pFouls"]}}</td>
+            <td class="turnovers" style='text-align:center; font-weight:bold'>{{stats["vTeam"]["totals"]["turnovers"]}}</td>
+        </tr>
+        
     </table>
 
     <table class="box" class="sortable">
@@ -177,6 +217,25 @@
         </tr>
         {% endif %}
         {% endfor %}
+        <tr id='{{hID}}-total'>
+            <td style='font-weight:bold'>Totals</td>
+            <td></td>
+            <td class="points" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["points"]}}</td>
+            <td class="fgm" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["fgm"]}}</td>
+            <td class="fga" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["fga"]}}</td>
+            <td class="fgp" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["fgp"]}}</td>
+            <td class="tpm" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["tpm"]}}</td>
+            <td class="tpa" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["tpa"]}}</td>
+            <td class="tpp" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["tpp"]}}</td>
+            <td class="totReb" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["totReb"]}}</td>
+            <td class="defReb" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["defReb"]}}</td>
+            <td class="offReb" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["offReb"]}}</td>
+            <td class="assists" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["assists"]}}</td>
+            <td class="steals" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["steals"]}}</td>
+            <td class="blocks" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["blocks"]}}</td>
+            <td class="pFouls" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["pFouls"]}}</td>
+            <td class="turnovers" style='text-align:center; font-weight:bold'>{{stats["hTeam"]["totals"]["turnovers"]}}</td>
+        </tr>
 
     </table>
 
