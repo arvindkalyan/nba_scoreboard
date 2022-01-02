@@ -1,46 +1,45 @@
 <h1>{% block title %} {{visitor}} @ {{home}} Play-by-Play {{datestring[-4:-2]}}-{{datestring[-2:]}}-{{datestring[:4]}}
     {% endblock %}</h1>
 {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename= 'css/game.css') }}">
 
 <script>
-    setInterval(function () {
+    setInterval(function refreshData() {
+        
         var datestring = $('#gameinfo').data().datestring;
         var gamestring = $('#gameinfo').data().gamestring;
-        console.log(datestring)
-        console.log(gamestring)
+        //console.log(datestring)
+        //console.log(gamestring)
         // AJAX send request
         $.ajax({
             url: "https://data.nba.net/data/10s/json/cms/noseason/game/" + datestring + "/" + gamestring + "/pbp_all.json",
             type: "GET",
             dataType: "json",
             success: function (data) {
-                console.log(document.getElementById("playbyplay").tBodies[0].rows.length-1)
-                console.log(data.sports_content.game.play.length)
-                
+                //console.log(document.getElementById("playbyplay").tBodies[0].rows.length-1)
+                //console.log(data.sports_content.game.play.length)
+                var last = document.getElementById("last")
+                var today = new Date();
+                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                last.innerHTML = "Last Updated: " + today.toString().split("GMT")[0]
+
                 
                 if (data.sports_content.game.play.length > document.getElementById("playbyplay").tBodies[0].rows.length-1) {
                     //location.reload();
-                    console.log("REFRESH REQUIRED")
+                    //console.log("REFRESH REQUIRED")
                     var game = "";
                     for(let i = document.getElementById("playbyplay").tBodies[0].rows.length-1; i < data.sports_content.game.play.length; i++){
-                        console.log(data.sports_content.game.play[i])
+                        //console.log(data.sports_content.game.play[i])
                         var row = document.getElementById("playbyplay").insertRow(1)
                         row.innerHTML = "<td style='text-align:center'> " + data.sports_content.game.play[i].period + " </td> <td> " + data.sports_content.game.play[i].clock + " </td> <td> " + data.sports_content.game.play[i].description + " </td> <td style='text-align:center'> " + data.sports_content.game.play[i].visitor_score + " </td> <td style='text-align:center'>" + data.sports_content.game.play[i].home_score + "</td>"
                         
                     }
-                    $.each(data.sports_content.game.play, function (key, value) {
-                        //console.log(value); //this outputs response as Objects shown above
-                        //$(".playbyplay").prepend(
-                         //   "<tr> <td style='text-align:center'>" + value.period + "</td> <td>" + value.clock + "</td> <td>" + value.description + "</td> <td style='text-align:center'>" + value.visitor_score + "</td> <td style='text-align:center'>"+ value.home_score + "</td> </tr>"
-                        //);
-                    });
-                    //console.log(game)
-
                 }
+               
             },
             error: function (request, error) { }
         });
-    }, 3000);  // check about changes every 30 seconds
+    }, 1000);  // check about changes every 30 seconds
 </script>
 {% endblock %}
 
@@ -49,8 +48,13 @@
     {% extends 'base.html' %}
     
     {% block content %}
+    <div>
     <a href="{{ '/'+datestring }}">Home</a>
     <a href="{{ '/%s/%s/box'%(datestring, gamestring) }}">Box Score</a>
+    </div>
+    <div id="last">Last Updated: </div>
+    
+    
     <table id="playbyplay">
         <tr>
             <th>Quarter</th>
